@@ -1,0 +1,32 @@
+services:
+  fastapi:
+    container_name: fastapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+#    command: "uvicorn app.main:app --host 0.0.0.0"
+    restart: always
+#    ports:
+#      - "8080:8000"
+  db:
+    container_name: database
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=dockerDB
+      - POSTGRES_PASSWORD=1234
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi
+
+volumes:
+  postgres_data:
