@@ -18,6 +18,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=dockerDB
       - POSTGRES_PASSWORD=1234
+    command: alembic upgrade head
+
   nginx:
     container_name: nginx
     build:
